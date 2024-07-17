@@ -28,7 +28,7 @@
       permanent: yes
     when: ansible_facts['distribution_major_version']|int >= 8
 
-  - name: firewalld ingress rule setup 1
+  - name: firewalld ingress rule setup for trusted networks
     tags: security
     firewalld:
       zone: trusted
@@ -36,17 +36,6 @@
       state: enabled
       permanent: yes
     with_items: "{{ firewall_ip_prefix_trusted }}"
-
-  - name: firewalld ingress rule setup 2
-    tags: security
-    firewalld:
-      zone: trusted
-      port: "{{ item }}"
-      state: enabled
-      permanent: yes
-    with_items:
-      - '1-65535/tcp'
-      - '1-65535/udp'
 
   - name: firewalld enable http/https in public zone
     tags: security
@@ -58,6 +47,7 @@
     with_items:
       - http
       - https
+    when: firewall_permit_https
 
   # Activate configuration the hard way and only once it's complete...
   
