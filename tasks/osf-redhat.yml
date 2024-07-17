@@ -44,7 +44,7 @@
       service: "{{ item }}"
       state: enabled
       permanent: yes
-    with_items: {{ firewall_public_services }}
+    with_items: "{{ firewall_public_services }}"
     when: firewall_public_services | length > 0
 
   # Activate configuration the hard way and only once it's complete...
