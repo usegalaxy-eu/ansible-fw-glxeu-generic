@@ -37,17 +37,15 @@
       permanent: yes
     with_items: "{{ firewall_ip_prefix_trusted }}"
 
-  - name: firewalld enable http/https in public zone
+  - name: firewalld ingress rules for the public zone
     tags: security
     firewalld:
       zone: public
       service: "{{ item }}"
       state: enabled
       permanent: yes
-    with_items:
-      - http
-      - https
-    when: firewall_permit_https
+    with_items: {{ firewall_public_services }}
+    when: firewall_public_services is defined
 
   # Activate configuration the hard way and only once it's complete...
   

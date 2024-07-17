@@ -1,6 +1,8 @@
 ---
-firewall_permit_https: true
 firewall_restart_daemon: false
+firewall_public_services:
+  - http
+  - https
 firewall_ip_prefix_trusted:
   - 10.5.67.0/24
   - 10.5.68.0/24
