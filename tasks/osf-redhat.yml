@@ -1,0 +1,69 @@
+  # Set up firewalld to only allow blanket access from trusted networks
+  # OMG, firewalld is such a shitty design >_>
+  
+
+  
+  - name: svc firewalld enable & start
+    tags: security
+    service: name=firewalld enabled=yes state=started
+
+
+  - name: firewalld default services disable
+    tags: security
+    firewalld:
+      zone: public
+      service: "{{ item }}"
+      state: disabled
+      permanent: yes
+    with_items:
+      - ssh
+      - 'dhcpv6-client'
+
+  - name: firewalld svc cockpit disable (RH 8+ only)
+    tags: security
+    firewalld:
+      zone: public
+      service: cockpit
+      state: disabled
+      permanent: yes
+    when: ansible_facts['distribution_major_version']|int >= 8
+
+  - name: firewalld ingress rule setup 1
+    tags: security
+    firewalld:
+      zone: trusted
+      source: "{{ item }}"
+      state: enabled
+      permanent: yes
+    with_items: "{{ firewall_ip_prefix_trusted }}"
+
+  - name: firewalld ingress rule setup 2
+    tags: security
+    firewalld:
+      zone: trusted
+      port: "{{ item }}"
+      state: enabled
+      permanent: yes
+    with_items:
+      - '1-65535/tcp'
+      - '1-65535/udp'
+
+  - name: firewalld enable http/https in public zone
+    tags: security
+    firewalld:
+      zone: public
+      service: "{{ item }}"
+      state: enabled
+      permanent: yes
+    with_items:
+      - http
+      - https
+
+  # Activate configuration the hard way and only once it's complete...
+  
+  - name: svc firewalld restart
+    tags: security
+    service: name=firewalld state=restarted
+    when: firewall_restart_daemon
+
+

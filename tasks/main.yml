@@ -1,0 +1,8 @@
+  # OS family switch
+  
+  - import_tasks: osf-debian.yml
+    when: ansible_facts["os_family"]|lower == "debian"
+
+  - import_tasks: osf-redhat.yml
+    when: ansible_facts["os_family"]|lower == "redhat"
+
