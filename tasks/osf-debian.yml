@@ -1,5 +1,5 @@
 # NOP
 
   - name: "NOP (This role is not currently implemented for Debian-based systems)"
-    command: "echo This role is not currently implemented for Debian-based systems"
+    ansible.builtin.command: "echo This role is not currently implemented for Debian-based systems"
 

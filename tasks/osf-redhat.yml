@@ -5,12 +5,12 @@
   
   - name: svc firewalld enable & start
     tags: security
-    service: name=firewalld enabled=yes state=started
+    ansible.builtin.service: name=firewalld enabled=yes state=started
 
 
   - name: firewalld disable default public services 
     tags: security
-    firewalld:
+    ansible.posix.firewalld:
       zone: public
       service: "{{ item }}"
       state: disabled
@@ -21,7 +21,7 @@
 
   - name: firewalld disable default internal services 
     tags: security
-    firewalld:
+    ansible.posix.firewalld:
       zone: internal
       service: "{{ item }}"
       state: disabled
@@ -33,7 +33,7 @@
 
   - name: firewalld svc cockpit disable public (RH 8+ only)
     tags: security
-    firewalld:
+    ansible.posix.firewalld:
       zone: public
       service: cockpit
       state: disabled
@@ -42,7 +42,7 @@
 
   - name: firewalld svc cockpit disable internal (RH 8+ only)
     tags: security
-    firewalld:
+    ansible.posix.firewalld:
       zone: internal
       service: cockpit
       state: disabled
@@ -51,7 +51,7 @@
 
   - name: firewalld ingress rule setup for trusted networks
     tags: security
-    firewalld:
+    ansible.posix.firewalld:
       zone: trusted
       source: "{{ item }}"
       state: enabled
@@ -60,7 +60,7 @@
 
   - name: firewalld ingress rule setup for internal networks 1/2
     tags: security
-    firewalld:
+    ansible.posix.firewalld:
       zone: internal
       source: "{{ item }}"
       state: enabled
@@ -70,7 +70,7 @@
 
   - name: firewalld ingress rule setup for internal networks 2/2
     tags: security
-    firewalld:
+    ansible.posix.firewalld:
       zone: internal
       service: "{{ item }}"
       state: enabled
@@ -80,7 +80,7 @@
 
   - name: firewalld ingress rules for the public zone
     tags: security
-    firewalld:
+    ansible.posix.firewalld:
       zone: public
       service: "{{ item }}"
       state: enabled
@@ -92,7 +92,7 @@
   
   - name: svc firewalld restart
     tags: security
-    service: name=firewalld state=restarted
+    ansible.builtin.service: name=firewalld state=restarted
     when: firewall_restart_daemon
 
 
