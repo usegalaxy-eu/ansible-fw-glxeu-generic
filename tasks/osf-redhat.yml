@@ -16,8 +16,8 @@
       state: disabled
       permanent: yes
     with_items:
-      - ssh
       - 'dhcpv6-client'
+      - ssh
 
   - name: firewalld disable default internal services 
     tags: security
@@ -30,6 +30,7 @@
       - dhcpv6-client
       - mdns
       - samba-client
+      - ssh
 
   - name: firewalld svc cockpit disable public (RH 8+ only)
     tags: security
