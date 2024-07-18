@@ -8,7 +8,7 @@
     service: name=firewalld enabled=yes state=started
 
 
-  - name: firewalld default services disable
+  - name: firewalld disable default public services 
     tags: security
     firewalld:
       zone: public
@@ -19,10 +19,31 @@
       - ssh
       - 'dhcpv6-client'
 
-  - name: firewalld svc cockpit disable (RH 8+ only)
+  - name: firewalld disable default internal services 
+    tags: security
+    firewalld:
+      zone: internal
+      service: "{{ item }}"
+      state: disabled
+      permanent: yes
+    with_items:
+      - dhcpv6-client
+      - mdns
+      - samba-client
+
+  - name: firewalld svc cockpit disable public (RH 8+ only)
     tags: security
     firewalld:
       zone: public
+      service: cockpit
+      state: disabled
+      permanent: yes
+    when: ansible_facts['distribution_major_version']|int >= 8
+
+  - name: firewalld svc cockpit disable internal (RH 8+ only)
+    tags: security
+    firewalld:
+      zone: internal
       service: cockpit
       state: disabled
       permanent: yes
@@ -36,6 +57,26 @@
       state: enabled
       permanent: yes
     with_items: "{{ firewall_ip_prefix_trusted }}"
+
+  - name: firewalld ingress rule setup for internal networks 1/2
+    tags: security
+    firewalld:
+      zone: internal
+      source: "{{ item }}"
+      state: enabled
+      permanent: yes
+    with_items: "{{ firewall_ip_prefix_internal }}"
+    when: firewall_internal_services | length > 0
+
+  - name: firewalld ingress rule setup for internal networks 2/2
+    tags: security
+    firewalld:
+      zone: internal
+      service: "{{ item }}"
+      state: enabled
+      permanent: yes
+    with_items: "{{ firewall_internal_services }}"
+    when: firewall_internal_services | length > 0
 
   - name: firewalld ingress rules for the public zone
     tags: security

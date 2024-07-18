@@ -3,6 +3,11 @@ firewall_restart_daemon: false
 firewall_public_services:
   - http
   - https
+firewall_internal_services:
+  - ssh
+firewall_ip_prefix_internal:
+  - 10.23.0.0/16
+  - 10.126.0.0/16
 firewall_ip_prefix_trusted:
   - 10.5.67.0/24
   - 10.5.68.0/24
