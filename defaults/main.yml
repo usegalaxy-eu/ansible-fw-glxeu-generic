@@ -4,6 +4,8 @@ firewall_public_services:
   - http
   - https
 firewall_internal_services:
+  - http
+  - https
   - ssh
 firewall_ip_prefix_internal:
   - 10.23.0.0/16
