@@ -74,4 +74,6 @@ you want to actually *revoke* any permissions you had previously granted via
 this playbook. While the playbook does remove well-known system default
 service permissions from both `internal` and `public` zones before applying
 its own changes, it will, by default, only ever *add* new permissions via
-the "prefix" and "services" variables listed above.
+the "prefix" and "services" variables listed above. (At this writing, there
+is no obvious way to reset individual network or service lists to empty
+with `ansible.posix.firewalld` v.1.5.4.)
