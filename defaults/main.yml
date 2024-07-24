@@ -1,5 +1,6 @@
 ---
 firewall_restart_daemon: false
+firewall_reset_configuration: false
 firewall_public_services:
   - http
   - https

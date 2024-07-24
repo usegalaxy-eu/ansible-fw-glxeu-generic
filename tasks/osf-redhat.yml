@@ -1,11 +1,16 @@
   # Set up firewalld to only allow blanket access from trusted networks
   # OMG, firewalld is such a shitty design >_>
   
-
   
   - name: svc firewalld enable & start
     tags: security
     ansible.builtin.service: name=firewalld enabled=yes state=started
+
+
+  - name: firewalld configuration reset to default
+    tags: security
+    ansible.builtin.command: "firewall-cmd --reset-to-defaults"
+    when: firewall_reset_configuration
 
 
   - name: firewalld disable default public services 
