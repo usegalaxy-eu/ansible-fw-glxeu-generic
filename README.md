@@ -78,6 +78,7 @@ its own changes, it will, by default, only ever *add* new permissions via
 the "prefix" and "services" variables listed above. (At this writing, there
 is no obvious way to reset individual network or service lists to empty
 with `ansible.posix.firewalld` v.1.5.4.) **USE THIS OPTION WITH CAUTION,
-AS IT MIGHT AFFECT TOTALLY UNRELATED, BUT REQUIRED, FIREWALL SETTINGS MADE
-BY OTHER SUBSYSTEMS, SUCH AS FORWARDING RULES FOR DOCKER CONTAINERS!**
+AS IT RESETS THE GLOBAL STATE OF THE IP FILTER AND MIGHT WIPE TOTALLY
+UNRELATED, BUT REQUIRED, FIREWALL SETTINGS MADE BY OTHER SUBSYSTEMS,
+SUCH AS FORWARDING RULES FOR DOCKER CONTAINERS!**
 
