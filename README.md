@@ -27,6 +27,10 @@ three zones:
   firewall configuration; otherwise a manual reload is required
   to actually activate the configuration.
 
+- `firewall_reset_configuration` (default `false`): If true,
+  reset the firewall rules to system defaults before applying
+  our changes. This is required to actually *revoke* permissions.
+
 - `firewall_ip_prefix_trusted` (default is site-specific):
   A list of networks (in CIDR notation) that are assigned to
   the `trusted` zone.
@@ -65,3 +69,9 @@ want, you have to list them all explicitly, the list for `internal` does
 **not** "inherit" from that of `public`. (See the variable documentation
 above for an example.)
 
+Last not least: remember to set `firewall_reset_configuration: true` if
+you want to actually *revoke* any permissions you had previously granted via
+this playbook. While the playbook does remove well-known system default
+service permissions from both `internal` and `public` zones before applying
+its own changes, it will, by default, only ever *add* new permissions via
+the "prefix" and "services" variables listed above.
