@@ -20,7 +20,7 @@ three zones:
   internal zone. Only services whitelisted for the zone are
   allowed; egress traffic is unrestricted.
 
-## Configurable variables
+## Configurable playbook variables
 
 - `firewall_restart_daemon` (default `false`): If true, restart
   firewalld as the last task in the playbook to activate the
@@ -41,4 +41,27 @@ three zones:
 - `firewall_public_services` (default: `[http, https]`):
   The list of services whitelisted for the `public` zone.
 
+
+## CAVEAT EMPTOR
+
+An incoming IP packet will be matched by *exactly one* zone,
+based on the networks assigned to each zone, first match wins, with
+`internal` being matched before `trusted` and `public` (being bound
+to destination network interfaces rather than source networks)
+receiving whatever is not matched by any other zone.
+
+THUS IT IS IMPORTANT THAT THE SUBNETS ASSIGNED TO THE ZONES BE ALL
+DISJUNCT!
+
+It might appear logical to e.g. bind an organization's whole internal IP
+address space (say, 10.0.0.0/8) to the `internal` zone and the network
+where the service actually lives (e.g. 10.2.3.0/24) to `trusted`, but this
+is **not** how firewalld works! The source address 10.2.3.4 will be matched
+in `internal`, **not** in `trusted` (see above for why).
+
+Likewise, if you intend the services whitelisted in `internal` to be a
+superset of those whitelisted in `public`, which is what you'll probably
+want, you have to list them all explicitly, the list for `internal` does
+**not** "inherit" from that of `public`. (See the variable documentation
+above for an example.)
 
