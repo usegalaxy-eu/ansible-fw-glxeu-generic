@@ -13,12 +13,12 @@ three zones:
 
 - An `internal` zone: ingress traffic from networks assigned to
   this zone is accepted only for services that are explicitly
-  whitelisted for it. Egress traffic is unrestricted.
+  whitelisted for it; egress traffic is unrestricted.
 
 - The `public` zone: applies to ingress traffic from any network
   that is not explicitly assigned to either the trusted or the
   internal zone. Only services whitelisted for the zone are
-  allowed, egress traffic is unrestricted.
+  allowed; egress traffic is unrestricted.
 
 ## Configurable variables
 
@@ -37,10 +37,6 @@ three zones:
 
 - `firewall_internal_services` (default `[http, https, ssh]`):
   The list of services whitelisted for the `internal` zone.
-
-- `firewall_ip_prefix_trusted` (default is site-specific):
-  A list of networks (in CIDR notation) that are assigned to
-  the `public` zone.
 
 - `firewall_public_services` (default: `[http, https]`):
   The list of services whitelisted for the `public` zone.
