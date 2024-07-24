@@ -30,6 +30,7 @@ three zones:
 - `firewall_reset_configuration` (default `false`): If true,
   reset the firewall rules to system defaults before applying
   our changes. This is required to actually *revoke* permissions.
+  **USE WITH CAUTION**, see the section "CAVEAT EMPTOR" below!
 
 - `firewall_ip_prefix_trusted` (default is site-specific):
   A list of networks (in CIDR notation) that are assigned to
@@ -76,4 +77,7 @@ service permissions from both `internal` and `public` zones before applying
 its own changes, it will, by default, only ever *add* new permissions via
 the "prefix" and "services" variables listed above. (At this writing, there
 is no obvious way to reset individual network or service lists to empty
-with `ansible.posix.firewalld` v.1.5.4.)
+with `ansible.posix.firewalld` v.1.5.4.) **USE THIS OPTION WITH CAUTION,
+AS IT MIGHT AFFECT TOTALLY UNRELATED, BUT REQUIRED, FIREWALL SETTINGS MADE
+BY OTHER SUBSYSTEMS, SUCH AS FORWARDING RULES FOR DOCKER CONTAINERS!**
+
