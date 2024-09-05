@@ -1,0 +1,18 @@
+dependencies: []
+
+galaxy_info:
+  role_name: firewall
+  namespace: usegalaxy_eu
+  author: sj213
+  description: FirewallD configuration for Galaxy Europe
+  company: "Galaxy Europe"
+  min_ansible_version: "2.4"
+  license: none
+  platforms:
+    - name: EL
+      versions:
+        - all
+  galaxy_tags:
+    - security
+    - firewall
+    - network
