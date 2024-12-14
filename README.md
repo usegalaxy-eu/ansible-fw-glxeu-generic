@@ -27,6 +27,11 @@ three zones:
   firewall configuration; otherwise a manual reload is required
   to actually activate the configuration.
 
+- `firewall_reset_configuration` (default `false`): If true,
+  reset the firewall rules to system defaults before applying
+  our changes. This is required to actually *revoke* permissions.
+  **USE WITH CAUTION**, see the section "CAVEAT EMPTOR" below!
+
 - `firewall_ip_prefix_trusted` (default is site-specific):
   A list of networks (in CIDR notation) that are assigned to
   the `trusted` zone.
@@ -64,4 +69,16 @@ superset of those whitelisted in `public`, which is what you'll probably
 want, you have to list them all explicitly, the list for `internal` does
 **not** "inherit" from that of `public`. (See the variable documentation
 above for an example.)
+
+Last not least: remember to set `firewall_reset_configuration: true` if
+you want to actually *revoke* any permissions you had previously granted via
+this playbook. While the playbook does remove well-known system default
+service permissions from both `internal` and `public` zones before applying
+its own changes, it will, by default, only ever *add* new permissions via
+the "prefix" and "services" variables listed above. (At this writing, there
+is no obvious way to reset individual network or service lists to empty
+with `ansible.posix.firewalld` v.1.5.4.) **USE THIS OPTION WITH CAUTION,
+AS IT RESETS THE GLOBAL STATE OF THE IP FILTER AND MIGHT WIPE TOTALLY
+UNRELATED, BUT REQUIRED, FIREWALL SETTINGS MADE BY OTHER SUBSYSTEMS,
+SUCH AS FORWARDING RULES FOR DOCKER CONTAINERS!**
 
