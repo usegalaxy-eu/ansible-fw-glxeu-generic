@@ -19,3 +19,10 @@ firewall_ip_prefix_trusted:
   - 132.230.224.0/24
   - 10.5.153.0/24
   - 132.230.153.0/25
+firewall_internal_services_disabled:
+  - dhcpv6-client
+  - mdns
+  - samba-client
+firewall_public_services_disabled:
+  - 'dhcpv6-client'
+  - ssh
