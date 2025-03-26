@@ -1,36 +1,30 @@
   # Set up firewalld to only allow blanket access from trusted networks
   # OMG, firewalld is such a shitty design >_>
-  
 
-  
+
+
   - name: svc firewalld enable & start
     tags: security
     ansible.builtin.service: name=firewalld enabled=yes state=started
 
 
-  - name: firewalld disable default public services 
+  - name: firewalld disable default public services
     tags: security
     ansible.posix.firewalld:
       zone: public
       service: "{{ item }}"
       state: disabled
       permanent: yes
-    with_items:
-      - 'dhcpv6-client'
-      - ssh
+    with_items: "{{ firewall_public_services_disabled | difference(firewall_public_services) }}"
 
-  - name: firewalld disable default internal services 
+  - name: firewalld disable default internal services
     tags: security
     ansible.posix.firewalld:
       zone: internal
       service: "{{ item }}"
       state: disabled
       permanent: yes
-    with_items:
-      - dhcpv6-client
-      - mdns
-      - samba-client
-      - ssh
+    with_items: "{{ firewall_internal_services_disabled | difference(firewall_internal_services) }}"
 
   - name: firewalld svc cockpit disable public (RH 8+ only)
     tags: security
@@ -90,7 +84,7 @@
     when: firewall_public_services | length > 0
 
   # Activate configuration the hard way and only once it's complete...
-  
+
   - name: svc firewalld restart
     tags: security
     ansible.builtin.service: name=firewalld state=restarted
