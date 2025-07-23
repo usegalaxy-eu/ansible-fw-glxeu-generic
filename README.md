@@ -24,8 +24,8 @@ three zones:
 
 - `firewall_restart_daemon` (default `false`): If true, restart
   firewalld as the last task in the playbook to activate the
-  firewall configuration; otherwise a manual reload is required
-  to actually activate the configuration.
+  firewall configuration; **by default a manual reload is required
+  to actually activate the configuration.**
 
 - `firewall_ip_prefix_trusted` (default is site-specific):
   A list of networks (in CIDR notation) that are assigned to
