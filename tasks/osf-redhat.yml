@@ -1,99 +1,103 @@
-  # Set up firewalld to only allow blanket access from trusted networks
-  # OMG, firewalld is such a shitty design >_>
-  
-
-  
-  - name: svc firewalld enable & start
-    tags: security
-    ansible.builtin.service: name=firewalld enabled=yes state=started
+# Set up firewalld to only allow blanket access from trusted networks
+# OMG, firewalld is such a shitty design >_>
 
 
-  - name: firewalld disable default public services 
-    tags: security
-    ansible.posix.firewalld:
-      zone: public
-      service: "{{ item }}"
-      state: disabled
-      permanent: yes
-    with_items:
-      - 'dhcpv6-client'
-      - ssh
+- name: Ensure firewalld is installed
+  tags: security
+  ansible.builtin.package:
+    name: firewalld
+    state: present
 
-  - name: firewalld disable default internal services 
-    tags: security
-    ansible.posix.firewalld:
-      zone: internal
-      service: "{{ item }}"
-      state: disabled
-      permanent: yes
-    with_items:
-      - dhcpv6-client
-      - mdns
-      - samba-client
-      - ssh
+- name: svc firewalld enable & start
+  tags: security
+  ansible.builtin.service: name=firewalld enabled=yes state=started
 
-  - name: firewalld svc cockpit disable public (RH 8+ only)
-    tags: security
-    ansible.posix.firewalld:
-      zone: public
-      service: cockpit
-      state: disabled
-      permanent: yes
-    when: ansible_facts['distribution_major_version']|int >= 8
 
-  - name: firewalld svc cockpit disable internal (RH 8+ only)
-    tags: security
-    ansible.posix.firewalld:
-      zone: internal
-      service: cockpit
-      state: disabled
-      permanent: yes
-    when: ansible_facts['distribution_major_version']|int >= 8
+- name: firewalld disable default public services 
+  tags: security
+  ansible.posix.firewalld:
+    zone: public
+    service: "{{ item }}"
+    state: disabled
+    permanent: yes
+  with_items:
+    - 'dhcpv6-client'
+    - ssh
 
-  - name: firewalld ingress rule setup for trusted networks
-    tags: security
-    ansible.posix.firewalld:
-      zone: trusted
-      source: "{{ item }}"
-      state: enabled
-      permanent: yes
-    with_items: "{{ firewall_ip_prefix_trusted }}"
+- name: firewalld disable default internal services 
+  tags: security
+  ansible.posix.firewalld:
+    zone: internal
+    service: "{{ item }}"
+    state: disabled
+    permanent: yes
+  with_items:
+    - dhcpv6-client
+    - mdns
+    - samba-client
+    - ssh
 
-  - name: firewalld ingress rule setup for internal networks 1/2
-    tags: security
-    ansible.posix.firewalld:
-      zone: internal
-      source: "{{ item }}"
-      state: enabled
-      permanent: yes
-    with_items: "{{ firewall_ip_prefix_internal }}"
-    when: firewall_internal_services | length > 0
+- name: firewalld svc cockpit disable public (RH 8+ only)
+  tags: security
+  ansible.posix.firewalld:
+    zone: public
+    service: cockpit
+    state: disabled
+    permanent: yes
+  when: ansible_facts['distribution_major_version']|int >= 8
 
-  - name: firewalld ingress rule setup for internal networks 2/2
-    tags: security
-    ansible.posix.firewalld:
-      zone: internal
-      service: "{{ item }}"
-      state: enabled
-      permanent: yes
-    with_items: "{{ firewall_internal_services }}"
-    when: firewall_internal_services | length > 0
+- name: firewalld svc cockpit disable internal (RH 8+ only)
+  tags: security
+  ansible.posix.firewalld:
+    zone: internal
+    service: cockpit
+    state: disabled
+    permanent: yes
+  when: ansible_facts['distribution_major_version']|int >= 8
 
-  - name: firewalld ingress rules for the public zone
-    tags: security
-    ansible.posix.firewalld:
-      zone: public
-      service: "{{ item }}"
-      state: enabled
-      permanent: yes
-    with_items: "{{ firewall_public_services }}"
-    when: firewall_public_services | length > 0
+- name: firewalld ingress rule setup for trusted networks
+  tags: security
+  ansible.posix.firewalld:
+    zone: trusted
+    source: "{{ item }}"
+    state: enabled
+    permanent: yes
+  with_items: "{{ firewall_ip_prefix_trusted }}"
 
-  # Activate configuration the hard way and only once it's complete...
-  
-  - name: svc firewalld restart
-    tags: security
-    ansible.builtin.service: name=firewalld state=restarted
-    when: firewall_restart_daemon
+- name: firewalld ingress rule setup for internal networks 1/2
+  tags: security
+  ansible.posix.firewalld:
+    zone: internal
+    source: "{{ item }}"
+    state: enabled
+    permanent: yes
+  with_items: "{{ firewall_ip_prefix_internal }}"
+  when: firewall_internal_services | length > 0
 
+- name: firewalld ingress rule setup for internal networks 2/2
+  tags: security
+  ansible.posix.firewalld:
+    zone: internal
+    service: "{{ item }}"
+    state: enabled
+    permanent: yes
+  with_items: "{{ firewall_internal_services }}"
+  when: firewall_internal_services | length > 0
+
+- name: firewalld ingress rules for the public zone
+  tags: security
+  ansible.posix.firewalld:
+    zone: public
+    service: "{{ item }}"
+    state: enabled
+    permanent: yes
+  with_items: "{{ firewall_public_services }}"
+  when: firewall_public_services | length > 0
+
+# Activate configuration the hard way and only once it's complete...
+
+- name: svc firewalld restart
+  tags: security
+  ansible.builtin.service: name=firewalld state=restarted
+  when: firewall_restart_daemon
 
