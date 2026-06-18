@@ -46,6 +46,9 @@ three zones:
 - `firewall_public_services` (default: `[http, https]`):
   The list of services whitelisted for the `public` zone.
 
+- `firewall_ip_rich_rules_public`: (default is empty list):
+  A list of rich rules to be applied to the `public` zone.
+
 
 ## CAVEAT EMPTOR
 
