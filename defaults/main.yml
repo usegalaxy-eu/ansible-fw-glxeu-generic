@@ -20,3 +20,4 @@ firewall_ip_prefix_trusted:
   - 132.230.224.0/24
   - 10.5.153.0/24
   - 132.230.153.0/25
+firewall_ip_rich_rules_public: []

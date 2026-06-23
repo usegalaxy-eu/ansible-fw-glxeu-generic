@@ -94,6 +94,17 @@
   with_items: "{{ firewall_public_services }}"
   when: firewall_public_services | length > 0
 
+- name: firewalld rich rules for the public zone
+  tags: security
+  ansible.posix.firewalld:
+    zone: public
+    rich_rule: "{{ item }}"
+    state: enabled
+    permanent: yes
+  with_items: "{{ firewall_ip_rich_rules_public }}"
+  when: firewall_ip_rich_rules_public | length > 0
+
+
 # Activate configuration the hard way and only once it's complete...
 
 - name: svc firewalld restart
